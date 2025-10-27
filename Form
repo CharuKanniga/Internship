@@ -1,42 +1,96 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function App() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [gender, setGender] = useState("");
+  const [course, setCourse] = useState("");
+  const [agree, setAgree] = useState(false);
+  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (name === "" || email === "") {
-      setError("All fields are required");
-    } else if (!email.includes("@")) {
-      setError("Enter a valid email");
-    } else {
-      setError("");
-      alert("Form submitted successfully");
+    // Basic empty field validation
+    if (!name || !email || !gender || !course || !message || !agree) {
+      setError("Please fill all fields and agree to the terms.");
+      return;
     }
+
+    // Simple email check (must contain '@' and '.')
+    if (!email.includes("@") || !email.includes(".")) {
+      setError("Email must contain '@' and '.'");
+      return;
+    }
+
+    setError("");
+    alert("Form submitted successfully!");
   };
 
   return (
-    <div>
-      <h2>Simple Form Validation</h2>
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+      <h2>Form Validation Example</h2>
+
       <form onSubmit={handleSubmit}>
+        <label>Name:</label><br />
         <input
           type="text"
-          placeholder="Enter name"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder="Enter your name"
         /><br /><br />
+
+        <label>Email:</label><br />
         <input
           type="text"
-          placeholder="Enter email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          placeholder="Enter your email"
         /><br /><br />
+
+        <label>Gender:</label><br />
+        <input
+          type="radio"
+          name="gender"
+          value="Male"
+          onChange={(e) => setGender(e.target.value)}
+        /> Male
+        <input
+          type="radio"
+          name="gender"
+          value="Female"
+          onChange={(e) => setGender(e.target.value)}
+        /> Female
+        <br /><br />
+
+        <label>Course:</label><br />
+        <select value={course} onChange={(e) => setCourse(e.target.value)}>
+          <option value="">Select Course</option>
+          <option value="React">React</option>
+          <option value="Java">Java</option>
+          <option value="Python">Python</option>
+        </select><br /><br />
+
+        <label>Message:</label><br />
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Enter your message"
+        ></textarea><br /><br />
+
+        <label>
+          <input
+            type="checkbox"
+            checked={agree}
+            onChange={(e) => setAgree(e.target.checked)}
+          /> I agree to the terms
+        </label><br /><br />
+
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
         <button type="submit">Submit</button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }
