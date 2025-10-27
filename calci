@@ -1,0 +1,53 @@
+import React, { useState } from "react";
+
+function App() {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [bmi, setBmi] = useState("");
+  const [message, setMessage] = useState("");
+
+  function calculateBMI() {
+    if (weight && height) {
+      const h = height / 100; // convert cm to m
+      const result = (weight / (h * h)).toFixed(2);
+      setBmi(result);
+
+      if (result < 18.5) setMessage("Underweight");
+      else if (result < 25) setMessage("Normal weight");
+      else if (result < 30) setMessage("Overweight");
+      else setMessage("Obese");
+    } else {
+      setMessage("Please enter both values");
+    }
+  }
+
+  return (
+    <>
+      <h1>BMI Calculator</h1>
+      <input
+        type="number"
+        placeholder="Weight (kg)"
+        value={weight}
+        onChange={(e) => setWeight(e.target.value)}
+      />
+      <br />
+      <input
+        type="number"
+        placeholder="Height (cm)"
+        value={height}
+        onChange={(e) => setHeight(e.target.value)}
+      />
+      <br />
+      <button onClick={calculateBMI}>Calculate</button>
+      <br />
+      {bmi && (
+        <>
+          <p>BMI: {bmi}</p>
+          <p>{message}</p>
+        </>
+      )}
+    </>
+  );
+}
+
+export default App;
