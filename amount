@@ -1,0 +1,46 @@
+import React, { useState } from "react";
+
+function App() {
+  const [usd, setUsd] = useState("");
+  const [eur, setEur] = useState("");
+  const [inrFromUsd, setInrFromUsd] = useState("");
+  const [inrFromEur, setInrFromEur] = useState("");
+
+  const convertUsdToInr = () => {
+    setInrFromUsd((usd * 83).toFixed(2)); // 1 USD = 83 INR
+  };
+
+  const convertEurToInr = () => {
+    setInrFromEur((eur * 90).toFixed(2)); // 1 EUR = 90 INR
+  };
+
+  return (
+    <>
+      <h1>Currency Converter</h1>
+
+      <div>
+        <input
+          type="number"
+          placeholder="Enter USD"
+          value={usd}
+          onChange={(e) => setUsd(e.target.value)}
+        />
+        <button onClick={convertUsdToInr}>Convert USD → INR</button>
+        {inrFromUsd && <p>INR: {inrFromUsd}</p>}
+      </div>
+
+      <div>
+        <input
+          type="number"
+          placeholder="Enter EUR"
+          value={eur}
+          onChange={(e) => setEur(e.target.value)}
+        />
+        <button onClick={convertEurToInr}>Convert EUR → INR</button>
+        {inrFromEur && <p>INR: {inrFromEur}</p>}
+      </div>
+    </>
+  );
+}
+
+export default App;
