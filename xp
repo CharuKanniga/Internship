@@ -1,0 +1,74 @@
+import React, { useState } from "react";
+
+function ExpenseTracker() {
+  const [desc, setDesc] = useState("");
+  const [amount, setAmount] = useState("");
+  const [expenses, setExpenses] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
+
+  const handleAddExpense = () => {
+    if (!desc || !amount) return;
+
+    const newExpense = { desc, amount: Number(amount) }; // store amount as number
+    if (editIndex !== null) {
+      const updated = [...expenses];
+      updated[editIndex] = newExpense;
+      setExpenses(updated);
+      setEditIndex(null);
+    } else {
+      setExpenses([...expenses, newExpense]);
+    }
+
+    setDesc("");
+    setAmount("");
+  };
+
+  const handleEdit = (i) => {
+    setDesc(expenses[i].desc);
+    setAmount(expenses[i].amount);
+    setEditIndex(i);
+  };
+
+  const handleDelete = (i) => {
+    setExpenses(expenses.filter((_, index) => index !== i));
+  };
+
+  //  Calculate total amount
+  const totalAmount = expenses.reduce((total, item) => total + item.amount, 0);
+
+  return (
+    <>
+      <h1>Expense Tracker</h1>
+
+      <input
+        placeholder="Description"
+        value={desc}
+        onChange={(e) => setDesc(e.target.value)}
+      />
+      <input
+        type="number"
+        placeholder="Amount"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value)}
+      />
+      <button onClick={handleAddExpense}>
+        {editIndex !== null ? "Update" : "Add"}
+      </button>
+
+      <ul>
+        {expenses.map((ex, i) => (
+          <li key={i}>
+            {ex.desc} - ₹{ex.amount}{" "}
+            <button onClick={() => handleEdit(i)}>Edit</button>
+            <button onClick={() => handleDelete(i)}>Delete</button>
+          </li>
+        ))}
+      </ul>
+
+      {/*  Total amount display */}
+      <h3>Total: ₹{totalAmount}</h3>
+    </>
+  );
+}
+
+export default ExpenseTracker;
