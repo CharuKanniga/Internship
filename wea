@@ -1,0 +1,124 @@
+import { useState, useEffect } from "react";
+import Search from "./components/icons/Search";
+import Droplet from "./components/icons/Droplet";
+import Wind from "./components/icons/Wind";
+import WeatherIcon from "./components/WeatherIcon";
+import LoadingSpinner from "./components/LoadingSpinner";
+
+export default function App() {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.tailwindcss.com";
+    document.head.appendChild(script);
+  }, []);
+
+  const [city, setCity] = useState("");
+  const [weather, setWeather] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  // Load from environment variables
+  const API_KEY = import.meta.env.VITE_RAPIDAPI_KEY;
+  const API_HOST = import.meta.env.VITE_RAPIDAPI_HOST;
+  const API_URL = https://${API_HOST}/city;
+
+  const fetchWeather = async (query) => {
+    if (!query) return;
+
+    setLoading(true);
+    setError("");
+    setWeather(null);
+
+    try {
+     const response = await fetch(${API_URL}?city=${query}&lang=EN, {
+  headers: {
+    "x-rapidapi-key": "45b4e8ee57mshbb99d7eb58afc35p1d214fjsn03588caec6b4",
+    "x-rapidapi-host": "open-weather13.p.rapidapi.com",
+  },
+});
+
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setWeather(data);
+      } else {
+        setError(data.message || "City not found. Please try again.");
+      }
+    } catch (err) {
+      console.error(err);
+      setError("Failed to fetch weather data. Check your network connection.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetchWeather(city);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex items-center justify-center p-4 font-sans">
+      <div className="w-full max-w-lg bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden transform transition-all duration-500 scale-100 hover:scale-105">
+        <div
+          className="relative p-6 sm:p-8 md:p-10 text-white"
+          style={{ backgroundImage: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" }}
+        >
+          <h1 className="text-3xl font-bold mb-4 text-center drop-shadow-md">Weather App</h1>
+
+          {/* Search form */}
+          <form onSubmit={handleSubmit} className="mb-6 flex space-x-2">
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              placeholder="Enter city name..."
+              className="flex-1 px-4 py-2 rounded-xl text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-400 transition duration-300"
+            />
+            <button
+              type="submit"
+              className="p-3 bg-purple-500 rounded-xl shadow-lg hover:bg-purple-600 transition-colors duration-300"
+            >
+              <Search className="text-white" />
+            </button>
+          </form>
+
+          {/* Conditional rendering */}
+          {loading && <LoadingSpinner />}
+          {error && <div className="text-center text-red-300 text-sm mt-4">{error}</div>}
+
+          {weather && weather.weather && weather.weather.length > 0 && weather.main && (
+            <div className="text-center transition-opacity duration-1000">
+              <div className="mb-4">
+                <WeatherIcon iconCode={weather.weather[0].icon} />
+                <p className="text-lg font-medium capitalize mt-2 drop-shadow-md">
+                  {weather.weather[0].description}
+                </p>
+              </div>
+              <h2 className="text-5xl md:text-6xl font-extrabold mb-2 drop-shadow-lg">
+                {Math.round(weather.main.temp)}°C
+              </h2>
+              <p className="text-2xl font-semibold mb-4 drop-shadow-md">
+                {weather.name}, {weather.sys.country}
+              </p>
+              <div className="grid grid-cols-2 gap-4 text-sm mt-6">
+                <div className="flex items-center justify-center p-3 bg-white/20 rounded-lg backdrop-blur-sm shadow-inner">
+                  <Droplet size={20} className="mr-2" />
+                  <span>Humidity: {weather.main.humidity}%</span>
+                </div>
+                <div className="flex items-center justify-center p-3 bg-white/20 rounded-lg backdrop-blur-sm shadow-inner">
+                  <Wind size={20} className="mr-2" />
+                  <span>Wind: {weather.wind.speed} m/s</span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="p-6 sm:p-8 text-center text-gray-500 dark:text-gray-400">
+          <p className="text-xs">Powered by OpenWeatherMap API.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
