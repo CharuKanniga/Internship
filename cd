@@ -1,0 +1,10 @@
+docker pull node:18-alpine
+docker pull nginx:alpine 
+docker build -t frontend .
+docker run -d -p 3000:80 frontend
+
+
+docker built -t frontend .
+docker run -d -p 3000:80 frontend 
+docker tag  frontend CharuKanniga/deee: latest 
+docker push CharuKanniga/deee:latest
