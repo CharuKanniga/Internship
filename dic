@@ -1,0 +1,29 @@
+import React, { useState } from "react";
+
+function App() {
+  const [word, setWord] = useState("");
+  const [result, setResult] = useState(null);
+
+  const searchWord = async () => {
+    const res = await fetch(https://api.dictionaryapi.dev/api/v2/entries/en/${word});
+    const data = await res.json();
+    setResult(data[0]);
+  };
+
+  return (
+    <div>
+      <h1> Dictionary</h1>
+      <input value={word} onChange={(e) => setWord(e.target.value)} placeholder="Enter word" />
+      <button onClick={searchWord}>Search</button>
+      {result && (
+        <div>
+          <h3>{result.word}</h3>
+          <p>{result.meanings[0].definitions[0].definition}</p>
+          <p><b>Example:</b> {result.meanings[0].definitions[0].example}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default App;
